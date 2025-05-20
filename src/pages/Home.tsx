@@ -30,7 +30,7 @@ const Home: React.FC = () => {
       <section className="relative h-screen bg-gradient-to-r from-primary-900 to-primary-700 text-white">
         <div className="absolute inset-0 z-0">
           <img 
-            src="assets/background.jpg" 
+            src="assets-img/background.jpg" 
             alt="Dental clinic" 
             className="w-full h-full object-cover opacity-40"
           />
