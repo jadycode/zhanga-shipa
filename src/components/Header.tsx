@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { Menu, X } from 'lucide-react';
@@ -8,10 +8,31 @@ const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
+  const menuRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isOpen &&
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -112,6 +133,7 @@ const Header: React.FC = () => {
 
           {/* Mobile Menu Button */}
           <button 
+            ref={buttonRef}
             onClick={toggleMenu}
             className="lg:hidden focus:outline-none"
           >
@@ -125,7 +147,7 @@ const Header: React.FC = () => {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="lg:hidden bg-white shadow-lg mt-2 rounded-lg">
+          <div ref={menuRef} className="lg:hidden bg-white shadow-lg mt-2 rounded-lg">
             <div className="py-4 space-y-2">
               <Link 
                 to="/" 
